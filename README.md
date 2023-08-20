@@ -1,3 +1,4 @@
 # YouTube-Download
 Download from YouTube links
-## use https://github.com/yt-dlp/yt-dlp.git
+
+This site was built using [yt-dlp](https://github.com/yt-dlp/yt-dlp.git).
