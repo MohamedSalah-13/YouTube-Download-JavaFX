@@ -8,13 +8,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="282.0" prefWidth="516.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hamza.youtubedownload.setting.SettingController">
+<AnchorPane prefHeight="282.0" prefWidth="516.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hamza.youtubedownload.setting.SettingController">
    <children>
       <VBox prefHeight="100.0" prefWidth="392.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="13.0" prefWidth="516.0" spacing="5.0">
                <children>
-                  <Label text="Save" />
+                  <Label text="Save Place" />
                   <TextField fx:id="text" HBox.hgrow="SOMETIMES" />
                   <Button fx:id="button" mnemonicParsing="false" text="..." />
                </children>
@@ -25,7 +25,7 @@
             <VBox prefHeight="200.0" prefWidth="100.0" />
             <VBox alignment="CENTER_RIGHT">
                <children>
-                  <Button fx:id="save" mnemonicParsing="false" text="save" />
+                  <Button fx:id="save" mnemonicParsing="false" prefWidth="80.0" text="Save" />
                </children>
             </VBox>
          </children>

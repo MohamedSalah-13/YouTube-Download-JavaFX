@@ -9,9 +9,13 @@ module com.hamza.youtubedownload {
     requires org.slf4j;
     requires org.apache.logging.log4j;
     requires lombok;
-//    requires eu.hansolo.tilesfx;
+    requires javafx.swing;
+    requires zip4j;
+    requires json.simple;
+
 
     opens com.hamza.youtubedownload to javafx.fxml;
+    requires javafx.media;
     exports com.hamza.youtubedownload;
     exports com.hamza.youtubedownload.other;
     opens com.hamza.youtubedownload.other to javafx.fxml;
@@ -19,4 +23,6 @@ module com.hamza.youtubedownload {
     opens com.hamza.youtubedownload.setting to javafx.fxml;
     exports com.hamza.youtubedownload.utils;
     opens com.hamza.youtubedownload.utils to javafx.fxml;
+    exports com.hamza.youtubedownload.audio;
+    opens com.hamza.youtubedownload.audio to javafx.fxml;
 }

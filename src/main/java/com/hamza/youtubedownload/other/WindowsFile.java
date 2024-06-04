@@ -14,6 +14,6 @@ public class WindowsFile implements Data_Setting{
 
     @Override
     public String time() {
-        return "%TIME";
+        return "echo %TIME%";
     }
 }
