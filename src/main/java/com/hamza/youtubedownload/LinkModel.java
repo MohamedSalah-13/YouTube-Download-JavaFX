@@ -12,7 +12,7 @@ public class LinkModel {
     @ColumnData(titleName = "url")
     private String videoUrl;
     @ColumnData(titleName = "length")
-    private double length;
+    private String length;
     @ColumnData(titleName = "image")
     private ImageView imageView;
 }

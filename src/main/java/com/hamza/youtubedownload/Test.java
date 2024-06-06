@@ -14,11 +14,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.hamza.youtubedownload.DownloadController.*;
+import static com.hamza.youtubedownload.TextName.*;
 
 public class Test {
-
-
 
     private FileWriter myWriter;
 

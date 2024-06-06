@@ -7,104 +7,90 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
-<AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hamza.youtubedownload.DownloadController">
+<AnchorPane prefHeight="560.0" prefWidth="874.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hamza.youtubedownload.DownloadController">
    <children>
-      <VBox prefHeight="471.0" prefWidth="711.0" spacing="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
-         <MenuBar>
-           <menus>
-             <Menu mnemonicParsing="false" text="File">
-               <items>
-                 <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
-               </items>
-             </Menu>
-             <Menu mnemonicParsing="false" text="Edit">
-               <items>
-                 <MenuItem mnemonicParsing="false" onAction="#remove" text="Delete" />
-               </items>
-             </Menu>
-             <Menu mnemonicParsing="false" text="Help">
-               <items>
-                 <MenuItem fx:id="menuItem_setting" mnemonicParsing="false" text="Setting" />
-                     <MenuItem mnemonicParsing="false" text="About" />
-               </items>
-             </Menu>
-           </menus>
-         </MenuBar>
-         <HBox alignment="CENTER_LEFT" spacing="5.0">
+      <VBox prefHeight="471.0" prefWidth="711.0" spacing="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <VBox>
             <children>
-            
-                                  <Label fx:id="welcomeText" text="Url" />
-               <TextField fx:id="text_url" maxWidth="1.7976931348623157E308" HBox.hgrow="SOMETIMES" />
+               <MenuBar>
+                 <menus>
+                   <Menu mnemonicParsing="false" text="File">
+                     <items>
+                       <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
+                     </items>
+                   </Menu>
+                   <Menu mnemonicParsing="false" text="Edit">
+                     <items>
+                       <MenuItem mnemonicParsing="false" text="Delete" />
+                     </items>
+                   </Menu>
+                   <Menu mnemonicParsing="false" text="Help">
+                     <items>
+                       <MenuItem fx:id="menuItem_setting" mnemonicParsing="false" text="Setting" />
+                           <MenuItem mnemonicParsing="false" text="About" />
+                     </items>
+                   </Menu>
+                 </menus>
+               </MenuBar>
+               <ToolBar prefHeight="40.0" prefWidth="200.0">
+                 <items>
+                   <Button mnemonicParsing="false" text="Start" />
+                     <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Stop" />
+                     <Button layoutX="55.0" layoutY="10.0" mnemonicParsing="false" text="Stop All" />
+                     <Button layoutX="100.0" layoutY="10.0" mnemonicParsing="false" text="Delete" />
+                     <Button layoutX="162.0" layoutY="10.0" mnemonicParsing="false" text="Delete Complete" />
+                     <Button layoutX="224.0" layoutY="10.0" mnemonicParsing="false" text="Setting" />
+                 </items>
+               </ToolBar>
             </children>
-         </HBox>
-         <VBox spacing="10.0">
-            <children>
-               <CheckBox fx:id="check_subtitle" mnemonicParsing="false" text="translate to arabic" />
-               <CheckBox fx:id="writeImage" mnemonicParsing="false" text="write image" />
-               <CheckBox fx:id="skipDownload" layoutX="35.0" layoutY="37.0" mnemonicParsing="false" selected="true" text="Skip Download" />
-            </children>
-            <padding>
-               <Insets left="25.0" />
-            </padding>
          </VBox>
-         <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="SOMETIMES">
-            <tabs>
-               <Tab text="Untitled Tab">
-                 <content>
-                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+         <SplitPane dividerPositions="0.20310296191819463" VBox.vgrow="SOMETIMES">
+            <items>
+               <VBox prefHeight="404.0" prefWidth="191.0" />
+               <VBox spacing="5.0">
+                  <children>
+                     <HBox alignment="CENTER_LEFT" spacing="5.0">
                         <children>
-                           <TableView fx:id="tableView" prefHeight="342.0" prefWidth="711.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                             <columns>
-                               <TableColumn prefWidth="75.0" text="C1" />
-                               <TableColumn prefWidth="75.0" text="C2" />
-                             </columns>
-                           </TableView>
+                        
+                                              <Label fx:id="welcomeText" text="Url" />
+                           <TextField fx:id="text_url" maxWidth="1.7976931348623157E308" HBox.hgrow="SOMETIMES" />
+                            <Button fx:id="search" text="Search" />
                         </children>
-                     </AnchorPane>
-                 </content>
-               </Tab>
-               <Tab text="add">
-                  <content>
-                     <ScrollPane>
-                        <content>
-                           <VBox fx:id="scrollPane">
-                              <children>
-                                 <HBox>
-                                    <children>
-                                       <Label fx:id="listView" text="Label" />
-                                    </children>
-                                    <padding>
-                                       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                    </padding>
-                                 </HBox>
-                              </children>
-                           </VBox>
-                        </content>
-                     </ScrollPane>
-                  </content>
-               </Tab>
-            </tabs>
-         </TabPane>
-         <HBox alignment="CENTER_RIGHT" spacing="5.0">
-            <children>
-                <Button fx:id="search" prefWidth="80.0" text="Search" />
-               <Button fx:id="download" onAction="#onDownloadButtonClick" prefWidth="80.0" text="Download" />
-            </children>
+                     </HBox>
+                     <FlowPane hgap="5.0" vgap="5.0">
+                        <children>
+                           <CheckBox fx:id="check_subtitle" mnemonicParsing="false" text="translate to arabic" />
+                        </children>
+                        <padding>
+                           <Insets left="20.0" />
+                        </padding>
+                     </FlowPane>
+                     <TableView fx:id="tableView" VBox.vgrow="SOMETIMES">
+                       <columns>
+                         <TableColumn prefWidth="75.0" text="C1" />
+                         <TableColumn prefWidth="75.0" text="C2" />
+                       </columns>
+                     </TableView>
+                  </children>
+                  <padding>
+                     <Insets bottom="2.0" left="2.0" right="2.0" top="5.0" />
+                  </padding>
+               </VBox>
+            </items>
             <padding>
-               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               <Insets bottom="5.0" left="5.0" right="5.0" />
             </padding>
-         </HBox>
+         </SplitPane>
       </VBox>
    </children>
 </AnchorPane>
