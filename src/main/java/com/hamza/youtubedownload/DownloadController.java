@@ -2,12 +2,18 @@ package com.hamza.youtubedownload;
 
 import com.hamza.youtubedownload.setting.SettingApplication;
 import com.hamza.youtubedownload.tableSetting.TableColumnAnnotation;
-import com.hamza.youtubedownload.utils.*;
+import com.hamza.youtubedownload.utils.AlertSetting;
+import com.hamza.youtubedownload.utils.Choose;
+import com.hamza.youtubedownload.utils.Config_Data;
+import com.hamza.youtubedownload.utils.TestCommands;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import lombok.extern.log4j.Log4j2;
@@ -22,16 +28,15 @@ import static com.hamza.youtubedownload.Test.getYoutubeId;
 @Log4j2
 public class DownloadController implements Initializable {
 
-    @FXML
-    private TextField text_url;
-    @FXML
-    private Button search;
+
     @FXML
     private MenuItem menuItem_setting;
     @FXML
     private TableView<LinkModel> tableView;
     @FXML
     private CheckBox check_subtitle;
+    @FXML
+    private Button addUrl;
 
     private final StringProperty url = new SimpleStringProperty();
     private final File directory = new File("data");
@@ -62,8 +67,7 @@ public class DownloadController implements Initializable {
         }
         testCommands.setDirectory(directory);
         youtubeApp = directory.getAbsolutePath() + "/yt-dlp ";
-        text_url.setPromptText("url");
-        url.bind(text_url.textProperty());
+
     }
 
     private void action() {
@@ -74,46 +78,6 @@ public class DownloadController implements Initializable {
                 getError(e);
             }
         });
-
-        search.setOnAction(actionEvent -> searchVideo());
-        search.disableProperty().bind(text_url.textProperty().isEmpty());
-    }
-
-    private void searchVideo() {
-        try {
-            if (url.get().isEmpty()) {
-                new AlertSetting().alertError("Error");
-                return;
-            }
-            if (new Validate_Url().isValidURL(url.get())) {
-
-                try {
-                    // https://www.youtube.com/watch?v=DniTlpZ__z8
-                    StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append(youtubeApp);
-                    stringBuilder.append(" -P ");
-                    stringBuilder.append("\"");
-                    stringBuilder.append(new Config_Data().getPro("save"));
-                    stringBuilder.append("\" ");
-                    stringBuilder.append(TextName.SKIP_DOWNLOAD);
-//                        stringBuilder.append(FLAT_PLAYLIST).append(" -i ").append(PRINT_TO_FILE).append(URL_S_TITLE_S).append(" file.txt");
-                    stringBuilder.append("-O \"%(.{filesize_approx,live_status,id,title,url,thumbnails})#j\" ");
-                    stringBuilder.append(" ").append(url.get());
-                    stringBuilder.append(" > fileData.json");
-
-                    new Thread(() -> testCommands.processSetting(stringBuilder.toString())).start();
-                    addRowToTable();
-                } catch (Exception e) {
-                    getError(e);
-                }
-
-            } else {
-                new AlertSetting().alertError("Invalid Url");
-                text_url.requestFocus();
-            }
-        } catch (Exception e) {
-            getError(e);
-        }
     }
 
     private void addRowToTable() {
@@ -160,7 +124,7 @@ public class DownloadController implements Initializable {
 
     @FXML
     protected void close() {
-        Stage stage = (Stage) text_url.getScene().getWindow();
+        Stage stage = (Stage) tableView.getScene().getWindow();
         stage.close();
     }
 
