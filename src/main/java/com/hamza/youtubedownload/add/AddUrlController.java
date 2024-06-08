@@ -19,6 +19,7 @@ import java.io.File;
 @Log4j2
 public class AddUrlController extends HBox {
 
+    public static final String SAVE_LINK = new Config_Data().getPro("save");
     private final StringProperty urls = new SimpleStringProperty();
 
     public AddUrlController() {
@@ -55,7 +56,7 @@ public class AddUrlController extends HBox {
             stringBuilder.append(file.getAbsolutePath()).append("/yt-dlp");
             stringBuilder.append(" -P ");
             stringBuilder.append("\"");
-            stringBuilder.append(new Config_Data().getPro("save"));
+            stringBuilder.append(SAVE_LINK);
             stringBuilder.append("\" ");
             stringBuilder.append(TextName.SKIP_DOWNLOAD);
 //                        stringBuilder.append(FLAT_PLAYLIST).append(" -i ").append(PRINT_TO_FILE).append(URL_S_TITLE_S).append(" file.txt");

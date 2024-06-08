@@ -11,11 +11,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.extern.log4j.Log4j2;
 import org.json.simple.JSONObject;
@@ -27,6 +26,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static com.hamza.youtubedownload.Test.getYoutubeId;
+import static com.hamza.youtubedownload.add.AddUrlController.SAVE_LINK;
 
 @Log4j2
 public class DownloadController implements Initializable {
@@ -40,6 +40,8 @@ public class DownloadController implements Initializable {
     private CheckBox check_subtitle;
     @FXML
     private Button addUrl, btnStart;
+    @FXML
+    private VBox boxTree;
 
     private final StringProperty url = new SimpleStringProperty();
     private final File directory = new File("data");
@@ -51,6 +53,7 @@ public class DownloadController implements Initializable {
         createDir();
         getTable();
         action();
+        addTree();
     }
 
     private void getTable() {
@@ -58,7 +61,6 @@ public class DownloadController implements Initializable {
         new TableColumnAnnotation().getTable(tableView, LinkModel.class);
 
         tableView.getColumns().get(0).setPrefWidth(200);
-        tableView.getColumns().get(1).setPrefWidth(200);
         tableView.getColumns().get(3).setPrefWidth(100);
     }
 
@@ -71,6 +73,12 @@ public class DownloadController implements Initializable {
         testCommands.setDirectory(directory);
         youtubeApp = directory.getAbsolutePath() + "/yt-dlp ";
 
+    }
+
+    private void addTree() {
+        TreeView<String> treeView = new TreeList().getTreeView();
+        boxTree.getChildren().add(treeView);
+        VBox.setVgrow(treeView, Priority.SOMETIMES);
     }
 
     private void action() {
@@ -105,13 +113,19 @@ public class DownloadController implements Initializable {
         double pow = Math.pow(1024, 2);
         double size = filesizeApprox / pow;
         model.setLength(Math.round(size) + " MB");
+        model.setSaveTo(SAVE_LINK);
 
+        // add image
+//        addImageToLink(model);
+        tableView.getItems().add(model);
+    }
+
+    private void addImageToLink(LinkModel model) {
         String youtubeId = getYoutubeId(url.get());
         ImageView imageView = new ImageView("https://i.ytimg.com/vi/" + youtubeId + "/mqdefault.jpg");
         imageView.setFitHeight(75);
         imageView.setFitWidth(100);
         model.setImageView(imageView);
-        tableView.getItems().add(model);
     }
 
     protected void onDownloadButtonClick() {

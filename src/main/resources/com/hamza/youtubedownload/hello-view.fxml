@@ -54,7 +54,7 @@
          </VBox>
          <SplitPane dividerPositions="0.20310296191819463" VBox.vgrow="SOMETIMES">
             <items>
-               <VBox prefHeight="404.0" prefWidth="191.0" />
+               <VBox fx:id="boxTree" maxWidth="350.0" />
                <VBox spacing="5.0">
                   <children>
                      <FlowPane hgap="5.0" vgap="5.0">
