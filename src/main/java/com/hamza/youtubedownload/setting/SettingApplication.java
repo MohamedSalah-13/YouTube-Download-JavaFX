@@ -18,8 +18,8 @@ public class SettingApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Setting");
         stage.setScene(scene);
-        stage.setResizable(false);
         stage.getIcons().add(new Image(new FileInputStream("data/Settings-L.48.png")));
+        stage.setResizable(false);
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.show();
     }

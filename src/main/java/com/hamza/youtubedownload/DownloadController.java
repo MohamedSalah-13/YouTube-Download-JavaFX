@@ -1,5 +1,6 @@
 package com.hamza.youtubedownload;
 
+import com.hamza.youtubedownload.add.AddUrl;
 import com.hamza.youtubedownload.setting.SettingApplication;
 import com.hamza.youtubedownload.tableSetting.TableColumnAnnotation;
 import com.hamza.youtubedownload.utils.AlertSetting;
@@ -20,7 +21,9 @@ import lombok.extern.log4j.Log4j2;
 import org.json.simple.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static com.hamza.youtubedownload.Test.getYoutubeId;
@@ -36,7 +39,7 @@ public class DownloadController implements Initializable {
     @FXML
     private CheckBox check_subtitle;
     @FXML
-    private Button addUrl;
+    private Button addUrl, btnStart;
 
     private final StringProperty url = new SimpleStringProperty();
     private final File directory = new File("data");
@@ -78,6 +81,19 @@ public class DownloadController implements Initializable {
                 getError(e);
             }
         });
+
+        addUrl.setOnAction(actionEvent -> {
+            try {
+                AddUrl addUrl1 = new AddUrl();
+                Optional<String> s = addUrl1.showAndWait();
+                s.ifPresent(s1 -> {
+                    url.setValue(s1);
+                    addRowToTable();
+                });
+            } catch (IOException e) {
+                getError(e);
+            }
+        });
     }
 
     private void addRowToTable() {
@@ -87,8 +103,6 @@ public class DownloadController implements Initializable {
         model.setVideoName(jsonObject.get(WriteReadFiles.TITLE).toString());
         double filesizeApprox = Double.parseDouble(jsonObject.get("filesize_approx").toString());
         double pow = Math.pow(1024, 2);
-        double pow1 = Math.pow(2, 20);
-        System.out.println(pow + "  " + pow1);
         double size = filesizeApprox / pow;
         model.setLength(Math.round(size) + " MB");
 

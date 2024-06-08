@@ -41,8 +41,8 @@
                </MenuBar>
                <ToolBar prefHeight="40.0" prefWidth="200.0">
                  <items>
-                   <Button mnemonicParsing="false" text="add url" />
-                     <Button layoutX="10.0" layoutY="13.0" mnemonicParsing="false" text="Start" />
+                   <Button fx:id="addUrl" mnemonicParsing="false" text="add url" />
+                     <Button fx:id="btnStart" layoutX="10.0" layoutY="13.0" mnemonicParsing="false" text="Start" />
                      <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Stop" />
                      <Button layoutX="55.0" layoutY="10.0" mnemonicParsing="false" text="Stop All" />
                      <Button layoutX="100.0" layoutY="10.0" mnemonicParsing="false" text="Delete" />

@@ -7,65 +7,77 @@ import com.hamza.youtubedownload.utils.TestCommands;
 import com.hamza.youtubedownload.utils.Validate_Url;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import lombok.extern.log4j.Log4j2;
 
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.io.File;
 
 @Log4j2
-public class AddUrlController implements Initializable {
-
-    @FXML
-    private TextField text_url;
-    @FXML
-    private Button search;
+public class AddUrlController extends HBox {
 
     private final StringProperty urls = new SimpleStringProperty();
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        text_url.setPromptText("url");
-        urls.bind(text_url.textProperty());
-        search.setOnAction(actionEvent -> searchVideo());
-        search.disableProperty().bind(text_url.textProperty().isEmpty());
+    public AddUrlController() {
+        TextField text_url = new TextField();
+        text_url.setPrefWidth(300);
+        text_url.setPromptText("add link");
+        text_url.requestFocus();
+        urls.bindBidirectional(text_url.textProperty());
+
+        this.getChildren().addAll(new Label("link"), text_url);
+        this.setSpacing(5);
+        this.setAlignment(Pos.CENTER_RIGHT);
+        HBox.setHgrow(text_url, Priority.SOMETIMES);
     }
 
-    private void searchVideo() {
-        try {
-            if (urls.get().isEmpty()) {
-                new AlertSetting().alertError("Error");
-                return;
-            }
+    public String searchVideo() {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (!getUrls().isEmpty())
             if (new Validate_Url().isValidURL(urls.get())) {
-
-                try {
-                    // https://www.youtube.com/watch?v=DniTlpZ__z8
-                    StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append("data/yt-dlp");
-                    stringBuilder.append(" -P ");
-                    stringBuilder.append("\"");
-                    stringBuilder.append(new Config_Data().getPro("save"));
-                    stringBuilder.append("\" ");
-                    stringBuilder.append(TextName.SKIP_DOWNLOAD);
-//                        stringBuilder.append(FLAT_PLAYLIST).append(" -i ").append(PRINT_TO_FILE).append(URL_S_TITLE_S).append(" file.txt");
-                    stringBuilder.append("-O \"%(.{filesize_approx,live_status,id,title,url,thumbnails})#j\" ");
-                    stringBuilder.append(" ").append(urls.get());
-                    stringBuilder.append(" > fileData.json");
-
-                    new Thread(() -> new TestCommands().processSetting(stringBuilder.toString())).start();
-                } catch (Exception e) {
-                    log.error(e.getClass().getCanonicalName(), e.getCause());
-                }
-
+                getData(stringBuilder);
             } else {
                 new AlertSetting().alertError("Invalid Url");
             }
+
+        return stringBuilder.toString();
+    }
+
+    private void getData(StringBuilder stringBuilder) {
+        try {
+            // https://www.youtube.com/watch?v=DniTlpZ__z8
+            File file = new File("data");
+            TestCommands testCommands = new TestCommands();
+            testCommands.setDirectory(file);
+            stringBuilder.append(file.getAbsolutePath()).append("/yt-dlp");
+            stringBuilder.append(" -P ");
+            stringBuilder.append("\"");
+            stringBuilder.append(new Config_Data().getPro("save"));
+            stringBuilder.append("\" ");
+            stringBuilder.append(TextName.SKIP_DOWNLOAD);
+//                        stringBuilder.append(FLAT_PLAYLIST).append(" -i ").append(PRINT_TO_FILE).append(URL_S_TITLE_S).append(" file.txt");
+            stringBuilder.append("-O \"%(.{filesize_approx,live_status,id,title,url,thumbnails})#j\" ");
+            stringBuilder.append(" ").append(getUrls());
+            stringBuilder.append(" > fileData.json");
+            testCommands.processSetting(stringBuilder.toString());
+
         } catch (Exception e) {
             log.error(e.getClass().getCanonicalName(), e.getCause());
         }
+    }
+
+    public String getUrls() {
+        return urls.get();
+    }
+
+    public StringProperty urlsProperty() {
+        return urls;
+    }
+
+    public void setUrls(String urls) {
+        this.urls.set(urls);
     }
 }
