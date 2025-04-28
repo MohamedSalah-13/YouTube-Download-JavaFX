@@ -11,18 +11,21 @@ module com.hamza.youtubedownload {
     requires lombok;
     requires javafx.swing;
     requires zip4j;
-    requires json.simple;
+//    requires json.simple;
+    requires org.json;
 
 
-    opens com.hamza.youtubedownload to javafx.fxml;
     requires javafx.media;
-    exports com.hamza.youtubedownload;
     exports com.hamza.youtubedownload.other;
     opens com.hamza.youtubedownload.other to javafx.fxml;
-    exports com.hamza.youtubedownload.setting;
-    opens com.hamza.youtubedownload.setting to javafx.fxml;
+    exports com.hamza.youtubedownload.view;
+    opens com.hamza.youtubedownload.view to javafx.fxml;
     exports com.hamza.youtubedownload.utils;
     opens com.hamza.youtubedownload.utils to javafx.fxml;
-    exports com.hamza.youtubedownload.audio;
-    opens com.hamza.youtubedownload.audio to javafx.fxml;
+    exports com.hamza.youtubedownload.controller;
+    opens com.hamza.youtubedownload.controller to javafx.fxml;
+    exports com.hamza.youtubedownload.model;
+    opens com.hamza.youtubedownload.model to javafx.fxml;
+    exports com.hamza.youtubedownload.youtube;
+    opens com.hamza.youtubedownload.youtube to javafx.fxml;
 }

@@ -9,12 +9,13 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="560.0" prefWidth="874.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hamza.youtubedownload.DownloadController">
+<AnchorPane prefHeight="560.0" prefWidth="874.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hamza.youtubedownload.controller.DownloadController">
    <children>
       <VBox prefHeight="471.0" prefWidth="711.0" spacing="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <VBox>
@@ -33,7 +34,7 @@
                    </Menu>
                    <Menu mnemonicParsing="false" text="Help">
                      <items>
-                       <MenuItem fx:id="menuItem_setting" mnemonicParsing="false" text="Setting" />
+                       <MenuItem fx:id="settingsMenuItem" mnemonicParsing="false" text="Setting" />
                            <MenuItem mnemonicParsing="false" text="About" />
                      </items>
                    </Menu>
@@ -41,8 +42,8 @@
                </MenuBar>
                <ToolBar prefHeight="40.0" prefWidth="200.0">
                  <items>
-                   <Button fx:id="addUrl" mnemonicParsing="false" text="add url" />
-                     <Button fx:id="btnStart" layoutX="10.0" layoutY="13.0" mnemonicParsing="false" text="Start" />
+                   <Button fx:id="addUrlButton" mnemonicParsing="false" text="add url" />
+                     <Button fx:id="startButton" layoutX="10.0" layoutY="13.0" mnemonicParsing="false" text="Start" />
                      <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Stop" />
                      <Button layoutX="55.0" layoutY="10.0" mnemonicParsing="false" text="Stop All" />
                      <Button layoutX="100.0" layoutY="10.0" mnemonicParsing="false" text="Delete" />
@@ -54,23 +55,24 @@
          </VBox>
          <SplitPane dividerPositions="0.20310296191819463" VBox.vgrow="SOMETIMES">
             <items>
-               <VBox fx:id="boxTree" maxWidth="350.0" />
+               <VBox fx:id="treeContainer" maxWidth="350.0" />
                <VBox spacing="5.0">
                   <children>
                      <FlowPane hgap="5.0" vgap="5.0">
                         <children>
-                           <CheckBox fx:id="check_subtitle" mnemonicParsing="false" text="translate to arabic" />
+                           <CheckBox fx:id="subtitleCheckbox" mnemonicParsing="false" text="translate to arabic" />
                         </children>
                         <padding>
                            <Insets left="20.0" />
                         </padding>
                      </FlowPane>
-                     <TableView fx:id="tableView" VBox.vgrow="SOMETIMES">
+                     <TableView fx:id="downloadTable" VBox.vgrow="SOMETIMES">
                        <columns>
                          <TableColumn prefWidth="75.0" text="C1" />
                          <TableColumn prefWidth="75.0" text="C2" />
                        </columns>
                      </TableView>
+                     <TextArea fx:id="logTextArea" prefHeight="150.0" editable="false" wrapText="true" VBox.vgrow="NEVER" />
                   </children>
                   <padding>
                      <Insets bottom="2.0" left="2.0" right="2.0" top="5.0" />
