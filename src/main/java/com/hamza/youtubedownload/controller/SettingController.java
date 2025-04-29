@@ -24,7 +24,7 @@ public class SettingController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        savePlace = new Choose().getPlacedSave();
+        savePlace = Choose.getPlacedSave();
         text.setText(savePlace);
         action();
     }

@@ -8,10 +8,11 @@ import java.io.IOException;
 @Log4j2
 public class Config_Data {
 
+    public static final File FILE = new File("data/config.properties");
+    public static final File FILE_DOWNLOAD = new File(System.getProperty("user.home") + "/.youtubeDownload");
     private final Configs configs;
 
     public Config_Data() {
-        File FILE = new File("data/config.properties");
         configs = new Configs(FILE);
     }
 

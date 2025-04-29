@@ -3,8 +3,11 @@ package com.hamza.youtubedownload.other;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+
+import static com.hamza.youtubedownload.utils.Config_Data.FILE_DOWNLOAD;
 
 @Log4j2
 public class WriteReadFiles {
@@ -12,8 +15,8 @@ public class WriteReadFiles {
     public static final String ID = "id";
     public static final String TITLE = "title";
 
-    public JSONObject getJsonObject() {
-        try (FileReader reader = new FileReader("data/fileData.json")) {
+    public JSONObject getJsonObject(String id) {
+        try (FileReader reader = new FileReader(FILE_DOWNLOAD + File.separator + id + ".json")) {
             StringBuilder content = new StringBuilder();
             char[] buffer = new char[1024];
             int charsRead;

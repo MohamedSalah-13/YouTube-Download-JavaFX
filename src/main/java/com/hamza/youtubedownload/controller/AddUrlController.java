@@ -1,10 +1,6 @@
 package com.hamza.youtubedownload.controller;
 
-import com.hamza.youtubedownload.utils.TextName;
-import com.hamza.youtubedownload.utils.AlertSetting;
-import com.hamza.youtubedownload.utils.Config_Data;
-import com.hamza.youtubedownload.utils.TestCommands;
-import com.hamza.youtubedownload.utils.Validate_Url;
+import com.hamza.youtubedownload.utils.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Pos;
@@ -19,7 +15,7 @@ import java.io.File;
 @Log4j2
 public class AddUrlController extends HBox {
 
-    public static final String SAVE_LINK = new Config_Data().getPro("save");
+
     private final StringProperty urls = new SimpleStringProperty();
 
     public AddUrlController() {
@@ -28,7 +24,6 @@ public class AddUrlController extends HBox {
         text_url.setPromptText("add link");
         text_url.requestFocus();
         urls.bindBidirectional(text_url.textProperty());
-//        text_url.setText("https://youtu.be/nOz20VAYQpo");
 
         this.getChildren().addAll(new Label("link"), text_url);
         this.setSpacing(5);
@@ -37,32 +32,33 @@ public class AddUrlController extends HBox {
     }
 
     public String searchVideo() {
-        StringBuilder stringBuilder = new StringBuilder();
-        if (!getUrls().isEmpty())
-            if (new Validate_Url().isValidURL(urls.get())) {
-                getData(stringBuilder);
-            } else {
-                new AlertSetting().alertError("Invalid Url");
-            }
-
+        Thread thread = new Thread(() -> {
+            StringBuilder stringBuilder = new StringBuilder();
+            if (!getUrls().isEmpty())
+                if (new Validate_Url().isValidURL(urls.get())) {
+                    getData(stringBuilder);
+                } else {
+                    new AlertSetting().alertError("Invalid Url");
+                }
+        });
+        thread.start();
         return urls.get();
     }
 
     private void getData(StringBuilder stringBuilder) {
         try {
-            File file = new File("data");
             TestCommands testCommands = new TestCommands();
-            testCommands.setDirectory(file);
+            testCommands.setDirectory(Config_Data.FILE_DOWNLOAD);
             stringBuilder.append("yt-dlp");
             stringBuilder.append(" -P ");
             stringBuilder.append("\"");
-            stringBuilder.append(SAVE_LINK);
+            stringBuilder.append(Choose.getPlacedSave());
             stringBuilder.append("\" ");
-            stringBuilder.append(TextName.SKIP_DOWNLOAD);
-            stringBuilder.append(" --write-info-json ");
+            stringBuilder.append(TextName.SKIP_DOWNLOAD).append(" ");
+            stringBuilder.append(TextName.WRITE_INFO_JSON).append(" ");
             stringBuilder.append("-O \"%(.{filesize,filesize_approx,live_status,id,title,url,thumbnails})#j\" ");
             stringBuilder.append(" ").append(getUrls());
-            stringBuilder.append(" > fileData.json");
+            stringBuilder.append(" > %(id)s.json");
             testCommands.processSetting(stringBuilder.toString());
 
         } catch (Exception e) {

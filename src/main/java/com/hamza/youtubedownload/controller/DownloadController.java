@@ -2,17 +2,22 @@ package com.hamza.youtubedownload.controller;
 
 import com.hamza.youtubedownload.model.LinkModel;
 import com.hamza.youtubedownload.other.WriteReadFiles;
-import com.hamza.youtubedownload.view.AddUrl;
-import com.hamza.youtubedownload.view.SettingApplication;
 import com.hamza.youtubedownload.tableSetting.TableColumnAnnotation;
 import com.hamza.youtubedownload.utils.AlertSetting;
+import com.hamza.youtubedownload.utils.Choose;
 import com.hamza.youtubedownload.utils.TestCommands;
+import com.hamza.youtubedownload.view.AddUrl;
+import com.hamza.youtubedownload.view.SettingApplication;
+import com.hamza.youtubedownload.view.VideoDetailsApplication;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -21,15 +26,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.json.JSONObject;
 
-import java.awt.Desktop;
-
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import static com.hamza.youtubedownload.view.Test.getYoutubeId;
-import static com.hamza.youtubedownload.controller.AddUrlController.SAVE_LINK;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -44,18 +47,15 @@ public class DownloadController implements Initializable {
     private static final int DATE_COLUMN_WIDTH = 100;
     // State
     private final StringProperty currentUrl = new SimpleStringProperty();
-    private final File dataDirectory = new File("data");
     // UI Components
     @FXML
     private MenuItem settingsMenuItem;
     @FXML
     private TableView<LinkModel> downloadTable;
     @FXML
-    private CheckBox subtitleCheckbox;
-    @FXML
     private Button addUrlButton;
     @FXML
-    private Button startButton,pushButton;
+    private Button startButton;
     @FXML
     private VBox treeContainer;
     @FXML
@@ -78,11 +78,47 @@ public class DownloadController implements Initializable {
         downloadTable.getColumns().get(0).setPrefWidth(NAME_COLUMN_WIDTH);
         downloadTable.getColumns().get(3).setPrefWidth(DATE_COLUMN_WIDTH);
 
+        // Create context menu
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem viewDetailsMenuItem = new MenuItem("View Video Details");
+        MenuItem openLocationMenuItem = new MenuItem("Open File Location");
+
+        viewDetailsMenuItem.setOnAction(event -> {
+            LinkModel selectedItem = downloadTable.getSelectionModel().getSelectedItem();
+            if (selectedItem != null) {
+                try {
+                    String command = buildDownloadCommand();
+                    VideoDetailsApplication.showVideoDetails(selectedItem, command);
+                } catch (IOException e) {
+                    logError(e);
+                    new AlertSetting().alertError("Could not open video details");
+                }
+            }
+        });
+
+        openLocationMenuItem.setOnAction(event -> {
+            LinkModel selectedItem = downloadTable.getSelectionModel().getSelectedItem();
+            if (selectedItem != null) {
+                openFileLocation(new File(selectedItem.getSaveTo()));
+            }
+        });
+
+        contextMenu.getItems().addAll(viewDetailsMenuItem, openLocationMenuItem);
+        downloadTable.setContextMenu(contextMenu);
+
+        // Handle double-click
         downloadTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 LinkModel selectedItem = downloadTable.getSelectionModel().getSelectedItem();
                 if (selectedItem != null) {
-                    openFileLocation(new File(selectedItem.getSaveTo()));
+                    try {
+                        // Open video details window on double-click
+                        String command = buildDownloadCommand();
+                        VideoDetailsApplication.showVideoDetails(selectedItem, command);
+                    } catch (IOException e) {
+                        logError(e);
+                        new AlertSetting().alertError("Could not open video details");
+                    }
                 }
             }
         });
@@ -98,14 +134,6 @@ public class DownloadController implements Initializable {
         settingsMenuItem.setOnAction(this::handleSettingsAction);
         addUrlButton.setOnAction(this::handleAddUrlAction);
         startButton.setOnAction(this::handleStartAction);
-
-        pushButton.setOnAction(event -> {
-            if (currentUrl.get() != null && !currentUrl.get().isEmpty()) {
-                addDownloadToTable();
-            } else {
-                new AlertSetting().alertError("Please add a url");
-            }
-        });
     }
 
     private void handleSettingsAction(ActionEvent event) {
@@ -119,14 +147,14 @@ public class DownloadController implements Initializable {
     private void handleAddUrlAction(ActionEvent event) {
         try {
             new AddUrl().showAndWait().ifPresent(url -> {
-                System.out.println(url);
-                currentUrl.setValue(url);
                 try {
-                    Thread.sleep(5000);
+                    System.out.println(url);
+                    currentUrl.setValue(url);
+                    Thread.sleep(1000);
+                    addDownloadToTable("fileData");
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    logError(e);
                 }
-                addDownloadToTable();
             });
         } catch (IOException e) {
             logError(e);
@@ -135,7 +163,7 @@ public class DownloadController implements Initializable {
 
     private void handleStartAction(ActionEvent event) {
         try {
-            startDownload();
+            openVideoDetailsWindow();
         } catch (Exception e) {
             logError(e);
             new AlertSetting().alertError("Error");
@@ -150,12 +178,27 @@ public class DownloadController implements Initializable {
         new Thread(() -> new TestCommands(logTextArea).processSetting(command)).start();
     }
 
+    private void openVideoDetailsWindow() throws IOException {
+        if (!AlertSetting.confirm()) {
+            return;
+        }
+
+        LinkModel selectedItem = downloadTable.getSelectionModel().getSelectedItem();
+        if (selectedItem == null) {
+            new AlertSetting().alertError("Please select a video to download");
+            return;
+        }
+
+        String command = buildDownloadCommand();
+        VideoDetailsApplication.showVideoDetails(selectedItem, command);
+    }
+
     private String buildDownloadCommand() {
         var selectedItem = downloadTable.getSelectionModel().getSelectedItem();
         return new StringBuilder()
                 .append(YT_DLP_COMMAND)
                 .append(" -P \"")
-                .append(SAVE_LINK)
+                .append(Choose.getPlacedSave())
                 .append("\"")
 //                .append(" -o \"%(uploader)s/%(title)s.%(ext)s\"")
                 .append(" -f bestvideo+bestaudio ")
@@ -167,8 +210,8 @@ public class DownloadController implements Initializable {
 
     }
 
-    private void addDownloadToTable() {
-        JSONObject videoInfo = new WriteReadFiles().getJsonObject();
+    private void addDownloadToTable(String videoUrl) {
+        JSONObject videoInfo = new WriteReadFiles().getJsonObject(videoUrl);
         LinkModel download = createDownloadModel(videoInfo);
         addThumbnailToDownload(download);
         downloadTable.getItems().add(download);
@@ -179,7 +222,7 @@ public class DownloadController implements Initializable {
         model.setVideoUrl(videoInfo.getString(WriteReadFiles.ID));
         model.setVideoName(videoInfo.getString(WriteReadFiles.TITLE));
         model.setLength(getFileSize(videoInfo) + " MB");
-        model.setSaveTo(SAVE_LINK);
+        model.setSaveTo(Choose.getPlacedSave());
         return model;
     }
 
@@ -200,7 +243,7 @@ public class DownloadController implements Initializable {
         thumbnail.setFitWidth(THUMBNAIL_WIDTH);
         download.setImageView(thumbnail);
     }
-    
+
 
     @FXML
     protected void close() {
@@ -221,10 +264,3 @@ public class DownloadController implements Initializable {
         }
     }
 }
-// youtube-dl --get-url https://www.youtube.com/watch?v=BaW_jenozKc
-// get url in playlist
-// yt-dlp --flat-playlist -i --print-to-file url file.txt "playlist-url"
-// yt-dlp --flat-playlist -i --print-to-file "%(url)s # %(title)s" batch.txt https://www.youtube.com/playlist?list=PLZV0a2jwt22vMQXKQh-h1vS-Z9XPji0p4
-// write image
-// stringBuilder.append(" -o \"thumbnail:%(uploader)s/image/%(title)s.%(ext)s\" ");
-// stringBuilder.append(TextName.WRITE_THUMBNAIL);
