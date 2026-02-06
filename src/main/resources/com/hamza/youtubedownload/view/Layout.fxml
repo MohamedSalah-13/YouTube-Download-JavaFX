@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="15" alignment="CENTER" xmlns:fx="http://javafx.com/fxml" fx:controller="com.hamza.youtubedownload.view.MainController" style="-fx-padding: 20;">
+    <Label text="Internet Video Downloader" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <HBox spacing="10">
+        <TextField fx:id="urlField" promptText="ضع رابط الفيديو هنا..." HBox.hgrow="ALWAYS"/>
+        <Button text="فحص الرابط" onAction="#analyzeUrl"/>
+    </HBox>
+
+    <HBox spacing="10">
+        <Button text="اختيار مجلد الحفظ" onAction="#chooseDirectory"/>
+        <Label fx:id="pathLabel" text="لم يتم اختيار مجلد بعد..."/>
+    </HBox>
+    <ComboBox fx:id="formatComboBox" promptText="اختر الجودة" maxWidth="Infinity"/>
+
+    <Button fx:id="downloadBtn" text="بدء التحميل" onAction="#startDownload" disable="true" style="-fx-background-color: #28a745; -fx-text-fill: white;"/>
+
+    <ProgressBar fx:id="progressBar" progress="0.0" maxWidth="Infinity"/>
+    <Label fx:id="statusLabel" text="جاهز..."/>
+</VBox>

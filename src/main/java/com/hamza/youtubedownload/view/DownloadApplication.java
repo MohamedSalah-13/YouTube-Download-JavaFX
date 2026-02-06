@@ -17,7 +17,7 @@ public class DownloadApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(DownloadApplication.class.getResource("hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(DownloadApplication.class.getResource("layout.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Youtube Download");
         stage.getIcons().add(new Image(new ImagePath().YOUTUBE_ICON_STREAM));
